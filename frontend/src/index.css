@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utilities */
+.hero-bg { background-image: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(245,245,245,0.95)); }
+
+.product-card img { @apply w-full h-96 object-cover; }
