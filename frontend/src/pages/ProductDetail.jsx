@@ -5,6 +5,7 @@ import api from "../api";
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [mainImage, setMainImage] = useState(null);
   const [qty, setQty] = useState(1);
   const navigate = useNavigate();
 
@@ -14,6 +15,13 @@ export default function ProductDetail() {
       .then((r) => setProduct(r.data))
       .catch(console.error);
   }, [id]);
+
+  useEffect(() => {
+    if (product)
+      setMainImage(
+        (product.images && product.images[0]) || product.image || null
+      );
+  }, [product]);
 
   function addToCart() {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -48,7 +56,10 @@ export default function ProductDetail() {
           {(product.images || [product.image]).slice(0, 4).map((img, idx) => (
             <button
               key={idx}
-              className="w-20 h-20 overflow-hidden border rounded hover:opacity-90"
+              onClick={() => setMainImage(img)}
+              className={`w-20 h-20 overflow-hidden border rounded hover:opacity-90 ${
+                mainImage === img ? "ring-2 ring-indigo-500" : ""
+              }`}
             >
               <img
                 src={img}
@@ -61,9 +72,10 @@ export default function ProductDetail() {
 
         {/* Main image column (span 2) */}
         <div className="col-span-1 p-6 bg-white rounded shadow lg:col-span-2">
-          <div className="relative">
+          <div className="relative group">
             <img
               src={
+                mainImage ||
                 (product.images && product.images[0]) ||
                 product.image ||
                 "https://via.placeholder.com/1200x1600"
@@ -72,8 +84,13 @@ export default function ProductDetail() {
               className="w-full h-[780px] object-cover rounded-lg"
             />
 
+            {/* Quick View pill (hover only) */}
+            <button className="absolute z-20 px-8 py-3 text-lg text-gray-900 transition-all duration-200 transform -translate-x-1/2 translate-y-6 bg-white border border-gray-100 rounded-full shadow-xl opacity-0 left-1/2 bottom-6 group-hover:translate-y-0 group-hover:opacity-100">
+              Quick View
+            </button>
+
             {/* left arrow */}
-            <button className="absolute flex items-center justify-center w-12 h-12 text-white -translate-y-1/2 rounded left-2 top-1/2 bg-gray-800/30">
+            <button className="absolute flex items-center justify-center w-12 h-12 text-white -translate-y-1/2 rounded opacity-0 group-hover:opacity-100 left-2 top-1/2 bg-gray-800/30">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5 h-5"
@@ -91,7 +108,7 @@ export default function ProductDetail() {
             </button>
 
             {/* right arrow */}
-            <button className="absolute flex items-center justify-center w-12 h-12 text-white -translate-y-1/2 rounded right-2 top-1/2 bg-gray-800/30">
+            <button className="absolute flex items-center justify-center w-12 h-12 text-white -translate-y-1/2 rounded opacity-0 group-hover:opacity-100 right-2 top-1/2 bg-gray-800/30">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5 h-5"
