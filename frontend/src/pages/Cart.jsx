@@ -69,7 +69,7 @@ export default function Cart() {
                 cart.map((it, idx) => (
                   <div
                     key={idx}
-                    className="grid grid-cols-4 gap-4 items-center p-6 border-b"
+                    className="grid grid-cols-4 gap-4 items-center p-6 border-b transform transition duration-200 hover:shadow-lg hover:-translate-y-1"
                   >
                     <div className="flex items-center space-x-4">
                       <img
@@ -77,7 +77,7 @@ export default function Cart() {
                           it.image || it.img || "https://via.placeholder.com/80"
                         }
                         alt={it.name || it.title}
-                        className="w-20 h-20 object-cover rounded"
+                        className="w-20 h-20 object-cover rounded transition-transform duration-300 hover:scale-105"
                       />
                       <div>
                         <div className="font-medium text-gray-800">
@@ -95,7 +95,7 @@ export default function Cart() {
 
                     <div className="flex items-center justify-center">
                       <button
-                        className="px-3 py-1 border rounded-l"
+                        className="px-3 py-1 border rounded-l transition transform duration-150 hover:bg-gray-100"
                         onClick={() => changeQty(idx, -1)}
                       >
                         -
@@ -106,10 +106,10 @@ export default function Cart() {
                         onChange={(e) =>
                           updateQty(idx, parseInt(e.target.value) || 1)
                         }
-                        className="w-16 text-center border-t border-b"
+                        className="w-16 text-center border-t border-b focus:ring-2 focus:ring-indigo-200 outline-none"
                       />
                       <button
-                        className="px-3 py-1 border rounded-r"
+                        className="px-3 py-1 border rounded-r transition transform duration-150 hover:bg-gray-100"
                         onClick={() => changeQty(idx, 1)}
                       >
                         +
@@ -121,7 +121,7 @@ export default function Cart() {
                         ${((it.price || 0) * (it.quantity || 1)).toFixed(2)}
                       </div>
                       <button
-                        className="text-sm text-red-600 mt-2"
+                        className="text-sm text-red-600 mt-2 transition-colors duration-150 hover:text-red-700"
                         onClick={() => remove(idx)}
                       >
                         Remove
@@ -138,17 +138,17 @@ export default function Cart() {
                 placeholder="Coupon Code"
                 value={coupon}
                 onChange={(e) => setCoupon(e.target.value)}
-                className="flex-1 border rounded-full px-4 py-3"
+                className="flex-1 border rounded-full px-4 py-3 focus:ring-2 focus:ring-indigo-200 outline-none"
               />
               <button
                 onClick={applyCoupon}
-                className="px-6 py-3 bg-gray-200 rounded-full font-semibold"
+                className="px-6 py-3 bg-gray-200 rounded-full font-semibold transition transform duration-150 hover:-translate-y-0.5 hover:shadow"
               >
                 APPLY COUPON
               </button>
               <button
                 onClick={() => persist(cart)}
-                className="px-6 py-3 border rounded-full font-semibold"
+                className="px-6 py-3 border rounded-full font-semibold transition transform duration-150 hover:-translate-y-0.5 hover:shadow"
               >
                 UPDATE CART
               </button>

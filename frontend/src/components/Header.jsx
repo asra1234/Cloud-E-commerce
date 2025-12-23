@@ -84,7 +84,7 @@ export default function Header() {
             <div className="flex items-center space-x-6">
               <button
                 aria-label="search"
-                className="text-gray-600 hover:text-gray-900"
+                className="text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +106,7 @@ export default function Header() {
               <button
                 onClick={() => setSidebarOpen(true)}
                 aria-label="open cart"
-                className="relative overflow-visible text-gray-600 hover:text-gray-900"
+                className="relative overflow-visible text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +130,7 @@ export default function Header() {
 
               <Link
                 to="/wishlist"
-                className="relative overflow-visible text-gray-600 hover:text-gray-900"
+                className="relative overflow-visible text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -177,7 +177,7 @@ export default function Header() {
               <button
                 aria-label="close cart"
                 onClick={() => setSidebarOpen(false)}
-                className="text-gray-600 hover:text-gray-900"
+                className="text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -237,14 +237,14 @@ export default function Header() {
                     setSidebarOpen(false);
                     navigate("/cart");
                   }}
-                  className="flex-1 py-3 text-center text-white bg-gray-900 rounded-full"
+                  className="flex-1 py-3 text-center text-white bg-gray-900 rounded-full transition transform duration-150 hover:-translate-y-0.5 hover:shadow"
                 >
                   VIEW CART
                 </button>
                 <Link
                   to="/payment"
                   onClick={() => setSidebarOpen(false)}
-                  className="flex-1 py-3 text-center text-gray-900 border border-gray-900 rounded-full"
+                  className="flex-1 py-3 text-center text-gray-900 border border-gray-900 rounded-full transition transform duration-150 hover:-translate-y-0.5 hover:shadow"
                 >
                   CHECK OUT
                 </Link>

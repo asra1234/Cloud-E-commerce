@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import { Link } from "react-router-dom";
+import QuickView from "../components/QuickView";
 
 const CATEGORIES = ["All Products", "Women", "Men", "Bag", "Shoes", "Watches"];
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [quickProduct, setQuickProduct] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All Products");
   const [query, setQuery] = useState("");
 
@@ -93,7 +95,7 @@ export default function Products() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {products.map((p) => (
-          <div key={p.id} className="group">
+          <div key={p.id} className="group relative">
             <div className="bg-white rounded overflow-hidden">
               <Link to={`/product/${p.id}`} className="block">
                 <img
@@ -102,13 +104,14 @@ export default function Products() {
                   className="w-full h-96 object-cover"
                 />
               </Link>
-              <div className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-gray-700 text-sm">{p.name}</h3>
-                    <div className="text-gray-500 text-sm mt-1">${p.price}</div>
-                  </div>
 
+              <div className="p-4 flex items-center justify-between">
+                <div>
+                  <h3 className="text-gray-700 text-sm">{p.name}</h3>
+                  <div className="text-gray-500 text-sm mt-1">${p.price}</div>
+                </div>
+
+                <div className="flex items-center space-x-2">
                   <button className="ml-4 text-gray-400 hover:text-red-500">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -125,12 +128,26 @@ export default function Products() {
                       />
                     </svg>
                   </button>
+
+                  <button
+                    onClick={() => setQuickProduct(p)}
+                    className="ml-2 px-3 py-2 bg-indigo-600 text-white rounded opacity-0 group-hover:opacity-100 transition"
+                  >
+                    Quick View
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {quickProduct && (
+        <QuickView
+          product={quickProduct}
+          onClose={() => setQuickProduct(null)}
+        />
+      )}
     </div>
   );
 }
