@@ -6,6 +6,7 @@ import ProductDetail from './pages/ProductDetail.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Order from './pages/Order.jsx';
+import Cart from './pages/Cart.jsx';
 import Payment from './pages/Payment.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
@@ -21,6 +22,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetail/>} />
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
+          <Route path="/cart" element={<Cart/>} />
           <Route path="/order" element={<Order/>} />
           <Route path="/payment" element={<Payment/>} />
         </Routes>
