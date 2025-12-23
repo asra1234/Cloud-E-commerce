@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
+  const isAuthenticated = Boolean(
+    user && (user.name || user.email || user.token)
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
@@ -84,7 +87,7 @@ export default function Header() {
             <div className="flex items-center space-x-6">
               <button
                 aria-label="search"
-                className="text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
+                className="text-gray-600 transition duration-150 transform hover:text-gray-900 hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +109,7 @@ export default function Header() {
               <button
                 onClick={() => setSidebarOpen(true)}
                 aria-label="open cart"
-                className="relative overflow-visible text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
+                className="relative overflow-visible text-gray-600 transition duration-150 transform hover:text-gray-900 hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +133,7 @@ export default function Header() {
 
               <Link
                 to="/wishlist"
-                className="relative overflow-visible text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
+                className="relative overflow-visible text-gray-600 transition duration-150 transform hover:text-gray-900 hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -146,23 +149,10 @@ export default function Header() {
                 </span>
               </Link>
 
-              {user ? (
-                <Link
-                  to="/account"
-                  className="ml-2 flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
-                >
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-700">
-                    {user.name
-                      ? user.name.charAt(0).toUpperCase()
-                      : user.email
-                      ? user.email.charAt(0).toUpperCase()
-                      : "U"}
-                  </div>
-                </Link>
-              ) : (
+              <div className="flex items-center space-x-2">
                 <Link
                   to="/login"
-                  className="ml-2 relative overflow-visible text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
+                  className="relative ml-2 overflow-visible text-gray-600 transition duration-150 transform hover:text-gray-900 hover:scale-110"
                   aria-label="login"
                 >
                   <svg
@@ -188,7 +178,14 @@ export default function Header() {
                     />
                   </svg>
                 </Link>
-              )}
+
+                <Link
+                  to="/login"
+                  className="hidden ml-1 text-sm font-medium text-gray-700 md:inline-flex hover:text-gray-900"
+                >
+                  Sign in
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -221,7 +218,7 @@ export default function Header() {
               <button
                 aria-label="close cart"
                 onClick={() => setSidebarOpen(false)}
-                className="text-gray-600 hover:text-gray-900 transition transform duration-150 hover:scale-110"
+                className="text-gray-600 transition duration-150 transform hover:text-gray-900 hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
