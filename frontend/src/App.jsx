@@ -10,6 +10,7 @@ import Cart from "./pages/Cart.jsx";
 import Payment from "./pages/Payment.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
+import AdminEmbed from "./components/AdminEmbed";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<AdminEmbed />} />
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />

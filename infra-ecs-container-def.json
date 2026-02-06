@@ -1,0 +1,15 @@
+[{
+  "name": "lambda-auth",
+  "image": "480831397635.dkr.ecr.us-east-1.amazonaws.com/lambda-auth:latest",
+  "portMappings": [{"containerPort": 3000, "protocol": "tcp"}],
+  "essential": true,
+  "environment": [{"name":"AUTH_DEV_INMEM","value":"0"}],
+  "logConfiguration": {
+    "logDriver": "awslogs",
+    "options": {
+      "awslogs-group": "/ecs/lambda-auth",
+      "awslogs-region": "us-east-1",
+      "awslogs-stream-prefix": "ecs"
+    }
+  }
+}]

@@ -1,0 +1,14 @@
+{
+  "name": "lambda-seed",
+  "version": "1.0.0",
+  "description": "One-off DB seed runner",
+  "main": "handler.js",
+  "scripts": {
+    "seed": "node handler.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.500.0",
+    "bcryptjs": "^2.4.3",
+    "mysql2": "^3.6.0"
+  }
+}

@@ -12,10 +12,21 @@ export default function Products() {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    api
-      .get("/products")
-      .then((r) => setProducts(r.data || []))
-      .catch(console.error);
+    let mounted = true;
+    const fetch = () =>
+      api
+        .get("/products")
+        .then((r) => {
+          if (mounted) setProducts(r.data || []);
+        })
+        .catch(console.error);
+
+    fetch();
+    const id = setInterval(fetch, 5000); // poll every 5s so admin changes appear
+    return () => {
+      mounted = false;
+      clearInterval(id);
+    };
   }, []);
 
   const matchesCategory = (p, category) => {
@@ -101,7 +112,8 @@ export default function Products() {
                 <img
                   src={p.image || "https://via.placeholder.com/600x800"}
                   alt={p.name}
-                  className="w-full h-96 object-cover"
+                  className="w-full h-56 sm:h-72 md:h-80 lg:h-96 object-cover"
+                  loading="lazy"
                 />
               </Link>
 

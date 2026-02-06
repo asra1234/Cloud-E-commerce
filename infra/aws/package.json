@@ -1,0 +1,13 @@
+{
+  "name": "cloudretail-infra-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "seed-db": "node seed-db.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.400.0",
+    "mysql2": "^3.3.0",
+    "bcrypt": "^5.1.0"
+  }
+}

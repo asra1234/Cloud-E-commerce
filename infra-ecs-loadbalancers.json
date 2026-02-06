@@ -1,0 +1,5 @@
+[{
+  "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:480831397635:targetgroup/lambda-auth-tg/0083d4d4decd5d02",
+  "containerName": "lambda-auth",
+  "containerPort": 3000
+}]

@@ -1,0 +1,18 @@
+{
+  "AllowOrigins": [
+    "https://d1rh66a1jmsf9o.cloudfront.net",
+    "https://d2av2asgpacsqw.cloudfront.net",
+    "http://cloudretail-frontend-20260120083509.s3-website-us-east-1.amazonaws.com",
+    "http://cloudretail-admin-20260120083509.s3-website-us-east-1.amazonaws.com"
+  ],
+  "AllowHeaders": [
+    "content-type",
+    "authorization",
+    "accept",
+    "origin",
+    "user-agent"
+  ],
+  "AllowMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  "ExposeHeaders": ["*"],
+  "MaxAge": 3600
+}

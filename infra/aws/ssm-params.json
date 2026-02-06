@@ -1,0 +1,15 @@
+﻿{
+    "commands":  [
+                     "yum update -y",
+                     "curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -",
+                     "yum install -y nodejs unzip",
+                     "cd /home/ec2-user",
+                     "aws s3 cp s3://cloudretail-seed-20260119230759-4381/seed-package.zip ./seed-package.zip --region us-east-1",
+                     "unzip -o seed-package.zip -d seedpkg",
+                     "cd seedpkg",
+                     "npm ci --no-audit --no-fund",
+                     "export SECRET_ARN=arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+                     "node seed-db.js \u003e /var/log/seed-db.log 2\u003e\u00261",
+                     "cat /var/log/seed-db.log || echo no-log"
+                 ]
+}

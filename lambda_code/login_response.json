@@ -1,0 +1,1 @@
+{"statusCode":200,"headers":{"Content-Type":"application/json"},"body":"{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2ODg4NzIyNywiZXhwIjoxNzY4OTE2MDI3fQ.HzxqKngKkGP2hjlB3Fmf0FUk_Qa8aMRPCzxQb81gvtM\",\"user\":{\"id\":1,\"name\":\"Admin\",\"email\":\"admin@cloudretail.local\"}}"}

@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Header() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const isAuthenticated = Boolean(
-    user && (user.name || user.email || user.token)
+    user && (user.name || user.email || user.token),
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cart, setCart] = useState([]);
@@ -36,7 +36,7 @@ export default function Header() {
   const itemCount = cart.reduce((s, it) => s + (it.quantity || 1), 0);
   const total = cart.reduce(
     (s, it) => s + (it.price || 0) * (it.quantity || 1),
-    0
+    0,
   );
 
   const formatPrice = (v) => {

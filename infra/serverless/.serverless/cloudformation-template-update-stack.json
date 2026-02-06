@@ -1,0 +1,2352 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "GetProductsLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-getProducts"
+      }
+    },
+    "GetProductByIdLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-getProductById"
+      }
+    },
+    "CreateProductLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-createProduct"
+      }
+    },
+    "UpdateProductLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-updateProduct"
+      }
+    },
+    "DeleteProductLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-deleteProduct"
+      }
+    },
+    "GetInventoryLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-getInventory"
+      }
+    },
+    "GetInventoryByIdLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-getInventoryById"
+      }
+    },
+    "CreateInventoryItemLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-createInventoryItem"
+      }
+    },
+    "UpdateInventoryItemLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-updateInventoryItem"
+      }
+    },
+    "DeleteInventoryItemLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-deleteInventoryItem"
+      }
+    },
+    "GetOrdersLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-getOrders"
+      }
+    },
+    "GetOrderByIdLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-getOrderById"
+      }
+    },
+    "CreateOrderLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-createOrder"
+      }
+    },
+    "RegisterLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-register"
+      }
+    },
+    "LoginLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-login"
+      }
+    },
+    "CloudretailSeedRunnerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/cloudretail-serverless-dev-cloudretailSeedRunner"
+      }
+    },
+    "GetProductsLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-products.zip"
+        },
+        "Handler": "handler.getProducts",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-getProducts",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetProductsLogGroup"
+      ]
+    },
+    "GetProductByIdLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-products.zip"
+        },
+        "Handler": "handler.getProductById",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-getProductById",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetProductByIdLogGroup"
+      ]
+    },
+    "CreateProductLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-products.zip"
+        },
+        "Handler": "handler.createProduct",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-createProduct",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "CreateProductLogGroup"
+      ]
+    },
+    "UpdateProductLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-products.zip"
+        },
+        "Handler": "handler.updateProduct",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-updateProduct",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "UpdateProductLogGroup"
+      ]
+    },
+    "DeleteProductLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-products.zip"
+        },
+        "Handler": "handler.deleteProduct",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-deleteProduct",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DeleteProductLogGroup"
+      ]
+    },
+    "GetInventoryLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-inventory.zip"
+        },
+        "Handler": "handler.getInventory",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-getInventory",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetInventoryLogGroup"
+      ]
+    },
+    "GetInventoryByIdLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-inventory.zip"
+        },
+        "Handler": "handler.getInventoryById",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-getInventoryById",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetInventoryByIdLogGroup"
+      ]
+    },
+    "CreateInventoryItemLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-inventory.zip"
+        },
+        "Handler": "handler.createInventoryItem",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-createInventoryItem",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "CreateInventoryItemLogGroup"
+      ]
+    },
+    "UpdateInventoryItemLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-inventory.zip"
+        },
+        "Handler": "handler.updateInventoryItem",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-updateInventoryItem",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "UpdateInventoryItemLogGroup"
+      ]
+    },
+    "DeleteInventoryItemLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-inventory.zip"
+        },
+        "Handler": "handler.deleteInventoryItem",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-deleteInventoryItem",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DeleteInventoryItemLogGroup"
+      ]
+    },
+    "GetOrdersLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-orders.zip"
+        },
+        "Handler": "handler.getOrders",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-getOrders",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetOrdersLogGroup"
+      ]
+    },
+    "GetOrderByIdLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-orders.zip"
+        },
+        "Handler": "handler.getOrderById",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-getOrderById",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetOrderByIdLogGroup"
+      ]
+    },
+    "CreateOrderLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-orders.zip"
+        },
+        "Handler": "handler.createOrder",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-createOrder",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "CreateOrderLogGroup"
+      ]
+    },
+    "RegisterLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-auth.zip"
+        },
+        "Handler": "handler.register",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-register",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "RegisterLogGroup"
+      ]
+    },
+    "LoginLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/artifacts/lambda-auth.zip"
+        },
+        "Handler": "handler.login",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-login",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "LoginLogGroup"
+      ]
+    },
+    "CloudretailSeedRunnerLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/cloudretail-serverless/dev/1769692081319-2026-01-29T13:08:01.319Z/cloudretailSeedRunner.zip"
+        },
+        "Handler": "services/lambda-seed/handler.seed",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "cloudretail-serverless-dev-cloudretailSeedRunner",
+        "MemorySize": 1024,
+        "Timeout": 900,
+        "Environment": {
+          "Variables": {
+            "DB_HOST": "cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com",
+            "DB_USER": "cloudadmin",
+            "DB_PASSWORD": "CloudRetail123!",
+            "DB_NAME": "cloudretail",
+            "JWT_SECRET": "change-me",
+            "SECRET_ARN": "arn:aws:secretsmanager:us-east-1:480831397635:secret:cloudretail/dev/db-atpOuC",
+            "DEBUG": "true",
+            "LAMBDA_SECURITY_GROUP_ID": "sg-0dd9fcb2c1c025444",
+            "PRIVATE_SUBNET_ID_1": "subnet-066c6d02d6518c5b6",
+            "PRIVATE_SUBNET_ID_2": "subnet-0c4681504a8fb8c1e"
+          }
+        },
+        "Role": "arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role",
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0dd9fcb2c1c025444"
+          ],
+          "SubnetIds": [
+            "subnet-066c6d02d6518c5b6",
+            "subnet-0c4681504a8fb8c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "CloudretailSeedRunnerLogGroup"
+      ]
+    },
+    "GetProductsLambdaVersionHJyrAv8VWn8JEUaTr3chDn5wy9Dg9cHWoybf9A": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetProductsLambdaFunction"
+        },
+        "CodeSha256": "BeHrrS955YERUz3mgGiPHC7zN2SGEaTpbs843XZkAnE="
+      }
+    },
+    "GetProductByIdLambdaVersionA653ImMvL6iri5UeCU5P6gp0YSxtBvzyheM15VVb0": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetProductByIdLambdaFunction"
+        },
+        "CodeSha256": "BeHrrS955YERUz3mgGiPHC7zN2SGEaTpbs843XZkAnE="
+      }
+    },
+    "CreateProductLambdaVersionFGLCWCcqP6ECy8OErDuRGVr2Jrd2rby3vWiPoaeWBI": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "CreateProductLambdaFunction"
+        },
+        "CodeSha256": "BeHrrS955YERUz3mgGiPHC7zN2SGEaTpbs843XZkAnE="
+      }
+    },
+    "UpdateProductLambdaVersiony9h52y4zZfjjCOvG8HueIS8ZOleB73aU8zq0DfCtU": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UpdateProductLambdaFunction"
+        },
+        "CodeSha256": "BeHrrS955YERUz3mgGiPHC7zN2SGEaTpbs843XZkAnE="
+      }
+    },
+    "DeleteProductLambdaVersionwEneFPzQi445fYGbj8yinwdbwVaEMOv6PWBoTk8w": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DeleteProductLambdaFunction"
+        },
+        "CodeSha256": "BeHrrS955YERUz3mgGiPHC7zN2SGEaTpbs843XZkAnE="
+      }
+    },
+    "GetInventoryLambdaVersionEveH9yHxoUo7RuOcyCrdDfMtrW1WgmghkXoSbYiLKk": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetInventoryLambdaFunction"
+        },
+        "CodeSha256": "yZf0xLNdVzeT6cFeg1JSQjqpntWWEoxonHJYucVL6l0="
+      }
+    },
+    "GetInventoryByIdLambdaVersionnBhNYUz9GoECPXDxDGmmvqRvh7zcKXc9hoWm2esZ4": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetInventoryByIdLambdaFunction"
+        },
+        "CodeSha256": "yZf0xLNdVzeT6cFeg1JSQjqpntWWEoxonHJYucVL6l0="
+      }
+    },
+    "CreateInventoryItemLambdaVersionQqlhCnrYRlGFqMx0L9wC7hV1ye0S7F19uRg2XcSmjEo": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "CreateInventoryItemLambdaFunction"
+        },
+        "CodeSha256": "yZf0xLNdVzeT6cFeg1JSQjqpntWWEoxonHJYucVL6l0="
+      }
+    },
+    "UpdateInventoryItemLambdaVersionAWHM9Jq8ekDrjWzo3AFMxrUpS9mAy6WMZ6T3bMWfjTU": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UpdateInventoryItemLambdaFunction"
+        },
+        "CodeSha256": "yZf0xLNdVzeT6cFeg1JSQjqpntWWEoxonHJYucVL6l0="
+      }
+    },
+    "DeleteInventoryItemLambdaVersionFPpr1ibeAMItyaQbzpAmnanLSwOP49a8grNqCiMYz8Y": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DeleteInventoryItemLambdaFunction"
+        },
+        "CodeSha256": "yZf0xLNdVzeT6cFeg1JSQjqpntWWEoxonHJYucVL6l0="
+      }
+    },
+    "GetOrdersLambdaVersionAW0ViFWRDAEe0dZFIwhhZsFiG7BuGiJBuulSy3ZHJTE": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetOrdersLambdaFunction"
+        },
+        "CodeSha256": "Gx43kp9GC5b3Vo2CKSEJOZoRthCAz9L6hcCADfZxtWQ="
+      }
+    },
+    "GetOrderByIdLambdaVersionKMq0B36n7oKILcDbcvaZwqeIlHyo3MmGZPWdKmoxY": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetOrderByIdLambdaFunction"
+        },
+        "CodeSha256": "Gx43kp9GC5b3Vo2CKSEJOZoRthCAz9L6hcCADfZxtWQ="
+      }
+    },
+    "CreateOrderLambdaVersionrjefFMe5m25FLijMsqV5gNG9X1vTRvHV2sHD92VfG8c": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "CreateOrderLambdaFunction"
+        },
+        "CodeSha256": "Gx43kp9GC5b3Vo2CKSEJOZoRthCAz9L6hcCADfZxtWQ="
+      }
+    },
+    "RegisterLambdaVersionJqDmghkV7FzJGPQJV9nk7XE2u1pJL5tRPXSOvRwWo0": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "RegisterLambdaFunction"
+        },
+        "CodeSha256": "KtJU9OKu9MQ39/dg6SzuL4VqlwkUBx48ZGHz2OV+71g="
+      }
+    },
+    "LoginLambdaVersion6i1gMXDeyzFm7BBIfW4bzDW9B8sHfzyT6z7bkr9cMc": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "LoginLambdaFunction"
+        },
+        "CodeSha256": "KtJU9OKu9MQ39/dg6SzuL4VqlwkUBx48ZGHz2OV+71g="
+      }
+    },
+    "CloudretailSeedRunnerLambdaVersionj9KNe0TIqjkfy2ynUdOevOi4v3rJgAqHc8J9Tk6hRUM": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "CloudretailSeedRunnerLambdaFunction"
+        },
+        "CodeSha256": "JJU0Y9LQWwdXpBUUIgw7/yfIGslGE2SBvoaqaS6b7L0="
+      }
+    },
+    "HttpApi": {
+      "Type": "AWS::ApiGatewayV2::Api",
+      "Properties": {
+        "Name": "dev-cloudretail-serverless",
+        "ProtocolType": "HTTP"
+      }
+    },
+    "HttpApiStage": {
+      "Type": "AWS::ApiGatewayV2::Stage",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "StageName": "$default",
+        "AutoDeploy": true,
+        "DefaultRouteSettings": {
+          "DetailedMetricsEnabled": false
+        }
+      }
+    },
+    "GetProductsLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetProductsLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationGetProducts": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "GetProductsLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRouteGetProducts": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "GET /products",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationGetProducts"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationGetProducts"
+    },
+    "GetProductByIdLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetProductByIdLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationGetProductById": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "GetProductByIdLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRouteGetProductsIdVar": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "GET /products/{id}",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationGetProductById"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationGetProductById"
+    },
+    "CreateProductLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "CreateProductLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationCreateProduct": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "CreateProductLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRoutePostProducts": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "POST /products",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationCreateProduct"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationCreateProduct"
+    },
+    "UpdateProductLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "UpdateProductLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationUpdateProduct": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "UpdateProductLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRoutePutProductsIdVar": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "PUT /products/{id}",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationUpdateProduct"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationUpdateProduct"
+    },
+    "DeleteProductLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "DeleteProductLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationDeleteProduct": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "DeleteProductLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRouteDeleteProductsIdVar": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "DELETE /products/{id}",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationDeleteProduct"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationDeleteProduct"
+    },
+    "GetInventoryLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetInventoryLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationGetInventory": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "GetInventoryLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRouteGetInventory": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "GET /inventory",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationGetInventory"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationGetInventory"
+    },
+    "GetInventoryByIdLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetInventoryByIdLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationGetInventoryById": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "GetInventoryByIdLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRouteGetInventoryIdVar": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "GET /inventory/{id}",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationGetInventoryById"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationGetInventoryById"
+    },
+    "CreateInventoryItemLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "CreateInventoryItemLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationCreateInventoryItem": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "CreateInventoryItemLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRoutePostInventory": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "POST /inventory",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationCreateInventoryItem"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationCreateInventoryItem"
+    },
+    "UpdateInventoryItemLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "UpdateInventoryItemLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationUpdateInventoryItem": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "UpdateInventoryItemLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRoutePutInventoryIdVar": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "PUT /inventory/{id}",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationUpdateInventoryItem"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationUpdateInventoryItem"
+    },
+    "DeleteInventoryItemLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "DeleteInventoryItemLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationDeleteInventoryItem": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "DeleteInventoryItemLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRouteDeleteInventoryIdVar": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "DELETE /inventory/{id}",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationDeleteInventoryItem"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationDeleteInventoryItem"
+    },
+    "GetOrdersLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetOrdersLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationGetOrders": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "GetOrdersLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRouteGetOrders": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "GET /orders",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationGetOrders"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationGetOrders"
+    },
+    "GetOrderByIdLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetOrderByIdLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationGetOrderById": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "GetOrderByIdLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRouteGetOrdersIdVar": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "GET /orders/{id}",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationGetOrderById"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationGetOrderById"
+    },
+    "CreateOrderLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "CreateOrderLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationCreateOrder": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "CreateOrderLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRoutePostOrders": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "POST /orders",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationCreateOrder"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationCreateOrder"
+    },
+    "RegisterLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RegisterLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationRegister": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "RegisterLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRoutePostAuthRegister": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "POST /auth/register",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationRegister"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationRegister"
+    },
+    "LoginLambdaPermissionHttpApi": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LoginLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "HttpApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "HttpApiIntegrationLogin": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "LoginLambdaFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "2.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "HttpApiRoutePostAuthLogin": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "HttpApi"
+        },
+        "RouteKey": "POST /auth/login",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "HttpApiIntegrationLogin"
+              }
+            ]
+          ]
+        }
+      },
+      "DependsOn": "HttpApiIntegrationLogin"
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-ServerlessDeploymentBucketName"
+      }
+    },
+    "GetProductsLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetProductsLambdaVersionHJyrAv8VWn8JEUaTr3chDn5wy9Dg9cHWoybf9A"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-GetProductsLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetProductByIdLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetProductByIdLambdaVersionA653ImMvL6iri5UeCU5P6gp0YSxtBvzyheM15VVb0"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-GetProductByIdLambdaFunctionQualifiedArn"
+      }
+    },
+    "CreateProductLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "CreateProductLambdaVersionFGLCWCcqP6ECy8OErDuRGVr2Jrd2rby3vWiPoaeWBI"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-CreateProductLambdaFunctionQualifiedArn"
+      }
+    },
+    "UpdateProductLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "UpdateProductLambdaVersiony9h52y4zZfjjCOvG8HueIS8ZOleB73aU8zq0DfCtU"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-UpdateProductLambdaFunctionQualifiedArn"
+      }
+    },
+    "DeleteProductLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DeleteProductLambdaVersionwEneFPzQi445fYGbj8yinwdbwVaEMOv6PWBoTk8w"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-DeleteProductLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetInventoryLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetInventoryLambdaVersionEveH9yHxoUo7RuOcyCrdDfMtrW1WgmghkXoSbYiLKk"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-GetInventoryLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetInventoryByIdLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetInventoryByIdLambdaVersionnBhNYUz9GoECPXDxDGmmvqRvh7zcKXc9hoWm2esZ4"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-GetInventoryByIdLambdaFunctionQualifiedArn"
+      }
+    },
+    "CreateInventoryItemLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "CreateInventoryItemLambdaVersionQqlhCnrYRlGFqMx0L9wC7hV1ye0S7F19uRg2XcSmjEo"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-CreateInventoryItemLambdaFunctionQualifiedArn"
+      }
+    },
+    "UpdateInventoryItemLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "UpdateInventoryItemLambdaVersionAWHM9Jq8ekDrjWzo3AFMxrUpS9mAy6WMZ6T3bMWfjTU"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-UpdateInventoryItemLambdaFunctionQualifiedArn"
+      }
+    },
+    "DeleteInventoryItemLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DeleteInventoryItemLambdaVersionFPpr1ibeAMItyaQbzpAmnanLSwOP49a8grNqCiMYz8Y"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-DeleteInventoryItemLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetOrdersLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetOrdersLambdaVersionAW0ViFWRDAEe0dZFIwhhZsFiG7BuGiJBuulSy3ZHJTE"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-GetOrdersLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetOrderByIdLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetOrderByIdLambdaVersionKMq0B36n7oKILcDbcvaZwqeIlHyo3MmGZPWdKmoxY"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-GetOrderByIdLambdaFunctionQualifiedArn"
+      }
+    },
+    "CreateOrderLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "CreateOrderLambdaVersionrjefFMe5m25FLijMsqV5gNG9X1vTRvHV2sHD92VfG8c"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-CreateOrderLambdaFunctionQualifiedArn"
+      }
+    },
+    "RegisterLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "RegisterLambdaVersionJqDmghkV7FzJGPQJV9nk7XE2u1pJL5tRPXSOvRwWo0"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-RegisterLambdaFunctionQualifiedArn"
+      }
+    },
+    "LoginLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "LoginLambdaVersion6i1gMXDeyzFm7BBIfW4bzDW9B8sHfzyT6z7bkr9cMc"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-LoginLambdaFunctionQualifiedArn"
+      }
+    },
+    "CloudretailSeedRunnerLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "CloudretailSeedRunnerLambdaVersionj9KNe0TIqjkfy2ynUdOevOi4v3rJgAqHc8J9Tk6hRUM"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-CloudretailSeedRunnerLambdaFunctionQualifiedArn"
+      }
+    },
+    "HttpApiId": {
+      "Description": "Id of the HTTP API",
+      "Value": {
+        "Ref": "HttpApi"
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-HttpApiId"
+      }
+    },
+    "HttpApiUrl": {
+      "Description": "URL of the HTTP API",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "HttpApi"
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region"
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix"
+            }
+          ]
+        ]
+      },
+      "Export": {
+        "Name": "sls-cloudretail-serverless-dev-HttpApiUrl"
+      }
+    }
+  }
+}

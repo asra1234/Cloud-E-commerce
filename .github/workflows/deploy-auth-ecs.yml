@@ -1,0 +1,57 @@
+name: Build and Deploy Auth (ECS)
+
+on:
+  push:
+    branches: [main]
+
+env:
+  IMAGE_NAME: auth-service
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker image
+        run: |
+          IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker build -t $IMAGE_URI ./services/lambda-auth
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+      - name: Push to ECR
+        run: |
+          docker push $IMAGE_URI
+
+      - name: Prepare task definition
+        run: |
+          mkdir -p infra/ecs/tmp
+          # replace placeholders in template
+          cp infra/ecs/auth-taskdef.json infra/ecs/tmp/auth-taskdef.json
+          sed -i "s|${IMAGE_URI}|$IMAGE_URI|g" infra/ecs/tmp/auth-taskdef.json
+          sed -i "s|${EXECUTION_ROLE_ARN}|${{ secrets.ECS_EXECUTION_ROLE_ARN }}|g" infra/ecs/tmp/auth-taskdef.json
+          sed -i "s|${TASK_ROLE_ARN}|${{ secrets.ECS_TASK_ROLE_ARN }}|g" infra/ecs/tmp/auth-taskdef.json
+          sed -i "s|${JWT_SECRET_ARN}|${{ secrets.JWT_SECRET_ARN }}|g" infra/ecs/tmp/auth-taskdef.json
+          sed -i "s|${DB_SECRET_ARN}|${{ secrets.DB_SECRET_ARN }}|g" infra/ecs/tmp/auth-taskdef.json
+          sed -i "s|${AWS_REGION}|${{ secrets.AWS_REGION }}|g" infra/ecs/tmp/auth-taskdef.json
+          cat infra/ecs/tmp/auth-taskdef.json
+
+      - name: Register task definition
+        run: |
+          aws ecs register-task-definition --cli-input-json file://infra/ecs/tmp/auth-taskdef.json
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER }} --service ${{ secrets.ECS_SERVICE }} --force-new-deployment

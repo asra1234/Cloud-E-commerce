@@ -1,0 +1,170 @@
+service: cloudretail-serverless
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: dev
+  role: arn:aws:iam::480831397635:role/cloudretail-lambda-exec-role
+  environment:
+    DB_HOST: ${env:DB_HOST, 'cloudretail-db-1.cone4ycyo0an.us-east-1.rds.amazonaws.com'}
+    DB_USER: ${env:DB_USER, 'cloudadmin'}
+    DB_PASSWORD: ${env:DB_PASSWORD, 'CloudRetail123!'}
+    DB_NAME: ${env:DB_NAME, 'cloudretail'}
+    JWT_SECRET: ${env:JWT_SECRET, 'change-me'}
+    SECRET_ARN: ${env:SECRET_ARN, ''}
+    DEBUG: ${env:DEBUG, 'true'}
+  # If you place lambdas in a VPC to reach RDS, set these via env or replace with actual ids.
+  # Example (replace placeholders before `serverless deploy`):
+  vpc:
+    securityGroupIds:
+      - ${env:LAMBDA_SECURITY_GROUP_ID}
+    subnetIds:
+      - ${env:PRIVATE_SUBNET_ID_1}
+      - ${env:PRIVATE_SUBNET_ID_2}
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+package:
+  individually: true
+
+functions:
+  getProducts:
+    handler: handler.getProducts
+    package:
+      artifact: artifacts/lambda-products.zip
+    events:
+      - httpApi:
+          path: /products
+          method: GET
+  getProductById:
+    handler: handler.getProductById
+    package:
+      artifact: artifacts/lambda-products.zip
+    events:
+      - httpApi:
+          path: /products/{id}
+          method: GET
+  createProduct:
+    handler: handler.createProduct
+    package:
+      artifact: artifacts/lambda-products.zip
+    events:
+      - httpApi:
+          path: /products
+          method: POST
+
+  updateProduct:
+    handler: handler.updateProduct
+    package:
+      artifact: artifacts/lambda-products.zip
+    events:
+      - httpApi:
+          path: /products/{id}
+          method: PUT
+  deleteProduct:
+    handler: handler.deleteProduct
+    package:
+      artifact: artifacts/lambda-products.zip
+    events:
+      - httpApi:
+          path: /products/{id}
+          method: DELETE
+
+  getInventory:
+    handler: handler.getInventory
+    package:
+      artifact: artifacts/lambda-inventory.zip
+    events:
+      - httpApi:
+          path: /inventory
+          method: GET
+  getInventoryById:
+    handler: handler.getInventoryById
+    package:
+      artifact: artifacts/lambda-inventory.zip
+    events:
+      - httpApi:
+          path: /inventory/{id}
+          method: GET
+  createInventoryItem:
+    handler: handler.createInventoryItem
+    package:
+      artifact: artifacts/lambda-inventory.zip
+    events:
+      - httpApi:
+          path: /inventory
+          method: POST
+  updateInventoryItem:
+    handler: handler.updateInventoryItem
+    package:
+      artifact: artifacts/lambda-inventory.zip
+    events:
+      - httpApi:
+          path: /inventory/{id}
+          method: PUT
+  deleteInventoryItem:
+    handler: handler.deleteInventoryItem
+    package:
+      artifact: artifacts/lambda-inventory.zip
+    events:
+      - httpApi:
+          path: /inventory/{id}
+          method: DELETE
+
+  getOrders:
+    handler: handler.getOrders
+    package:
+      artifact: artifacts/lambda-orders.zip
+    events:
+      - httpApi:
+          path: /orders
+          method: GET
+  getOrderById:
+    handler: handler.getOrderById
+    package:
+      artifact: artifacts/lambda-orders.zip
+    events:
+      - httpApi:
+          path: /orders/{id}
+          method: GET
+  createOrder:
+    handler: handler.createOrder
+    package:
+      artifact: artifacts/lambda-orders.zip
+    events:
+      - httpApi:
+          path: /orders
+          method: POST
+
+  register:
+    handler: handler.register
+    package:
+      artifact: artifacts/lambda-auth.zip
+    events:
+      - httpApi:
+          path: /auth/register
+          method: POST
+  login:
+    handler: handler.login
+    package:
+      artifact: artifacts/lambda-auth.zip
+    events:
+      - httpApi:
+          path: /auth/login
+          method: POST
+
+  cloudretailSeedRunner:
+    handler: services/lambda-seed/handler.seed
+    timeout: 900
+    memorySize: 1024
+    # No HTTP event; this is an admin one-off for seeding the DB
+    package:
+      include:
+        - ../../services/lambda-seed/**
+
+# For local testing with serverless-offline, run `npx serverless offline` in this folder

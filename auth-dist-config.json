@@ -1,0 +1,37 @@
+﻿{
+  "CallerReference": "2026-02-04T20:15:59.7956334+05:30",
+  "Comment": "CloudFront for auth API",
+  "Enabled": true,
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "lambda-auth-origin",
+        "DomainName": "lambda-auth-alb-public-1314901401.us-east-1.elb.amazonaws.com",
+        "OriginPath": "",
+        "CustomOriginConfig": {
+          "HTTPPort": 80,
+          "HTTPSPort": 443,
+          "OriginProtocolPolicy": "http-only",
+          "OriginSslProtocols": { "Quantity": 1, "Items": ["TLSv1.2"] },
+          "OriginReadTimeout": 30,
+          "OriginKeepaliveTimeout": 5
+        }
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "lambda-auth-origin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": { "Quantity": 7, "Items": ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"], "CachedMethods": { "Quantity": 2, "Items": ["GET","HEAD"] } },
+    "ForwardedValues": { "QueryString": true, "Cookies": { "Forward": "all" }, "Headers": { "Quantity": 0, "Items": [] }, "QueryStringCacheKeys": { "Quantity": 0, "Items": [] } },
+    "MinTTL": 0,
+    "DefaultTTL": 0,
+    "MaxTTL": 0,
+    "Compress": true
+  },
+  "PriceClass": "PriceClass_All",
+  "ViewerCertificate": { "CloudFrontDefaultCertificate": true },
+  "HttpVersion": "http2",
+  "IsIPV6Enabled": true
+}
